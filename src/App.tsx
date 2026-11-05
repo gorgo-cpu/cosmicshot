@@ -78,21 +78,13 @@ export function App() {
       {/* BREATHABLE, SPACIOUS NAVIGATION BAR */}
       <header className="sticky top-0 z-40 border-b border-[#2C2C2E]/70 bg-[#000000]/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1440px] items-center justify-between px-8 py-6 lg:px-16">
-          {/* Brand Title */}
+          {/* Brand Title & Official Logo */}
           <a href="#" className="flex items-center gap-4 group">
             <img
-              src="https://cosmicshotmagazine.wordpress.com/wp-content/uploads/2026/10/cosmicshot-lab.png?w=100"
-              alt="Cosmic Shot Magazine"
-              className="h-9 w-9 rounded-full border border-[#2C2C2E] object-cover transition-transform group-hover:scale-105"
+              src="/cosmicshot-logo.png"
+              alt="Cosmic Shot Magazine Logo"
+              className="h-14 w-auto object-contain transition-transform group-hover:scale-105"
             />
-            <div className="flex flex-col">
-              <span className="text-base font-bold tracking-[0.32em] text-[#F5F5F7]">
-                COSMIC SHOT
-              </span>
-              <span className="mt-0.5 font-mono text-[10px] tracking-[0.28em] text-[#8E8E93]">
-                MAGAZINE
-              </span>
-            </div>
           </a>
 
           {/* Breathable Center Navigation Links */}
@@ -1476,13 +1468,20 @@ export function App() {
       <footer className="border-t border-[#2C2C2E] bg-[#000000] text-[#8E8E93]">
         <div className="mx-auto max-w-[1440px] px-8 py-14 lg:px-16">
           <div className="flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
-            <div>
-              <div className="text-base font-bold tracking-[0.28em] text-[#F5F5F7]">
-                COSMIC SHOT MAGAZINE
+            <div className="flex items-center gap-5">
+              <img
+                src="/cosmicshot-logo.png"
+                alt="Cosmic Shot Magazine Logo"
+                className="h-16 w-auto object-contain"
+              />
+              <div>
+                <div className="text-base font-bold tracking-[0.28em] text-[#F5F5F7]">
+                  COSMIC SHOT MAGAZINE
+                </div>
+                <p className="mt-1 text-xs text-[#8E8E93]">
+                  Artists. Creativity. Culture. — Documenting the people behind the culture.
+                </p>
               </div>
-              <p className="mt-1 text-xs text-[#8E8E93]">
-                Artists. Creativity. Culture. — Documenting the people behind the culture.
-              </p>
             </div>
 
             <div className="flex items-center gap-6 font-mono text-xs tracking-widest">
