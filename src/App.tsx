@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react"
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -33,11 +33,50 @@ function InstagramIcon({ className = "h-4 w-4" }: { className?: string }) {
  * Eagerly pre-loaded Spotify Playlist Embed with instant skeleton placeholder
  * and persistent DOM mounting so switching artist tabs never reloads the player.
  */
-function FastSpotifyEmbed({ src, title }: { src: string; title: string }) {
+function FastSpotifyEmbed({
+  src,
+  title,
+  isActive = true,
+  priority = false,
+}: {
+  src: string
+  title: string
+  isActive?: boolean
+  priority?: boolean
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [shouldMount, setShouldMount] = useState(priority && isActive)
   const [loaded, setLoaded] = useState(false)
 
+  useEffect(() => {
+    if (shouldMount || !isActive) return
+    if (priority) {
+      setShouldMount(true)
+      return
+    }
+    const el = containerRef.current
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setShouldMount(true)
+      return
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldMount(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: "700px 0px" }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [isActive, priority, shouldMount])
+
   return (
-    <div className="relative h-[352px] w-full overflow-hidden rounded-[8px] border border-[#2C2C2E] bg-[#0A0A0A]">
+    <div
+      ref={containerRef}
+      className="relative h-[352px] w-full overflow-hidden rounded-[8px] border border-[#2C2C2E] bg-[#0A0A0A]"
+    >
       {!loaded && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#0A0A0A] p-6 text-center">
           <div className="flex items-center gap-2.5 font-mono text-xs tracking-[0.2em] text-[#8C1D24]">
@@ -49,18 +88,20 @@ function FastSpotifyEmbed({ src, title }: { src: string; title: string }) {
           </div>
         </div>
       )}
-      <iframe
-        title={title}
-        src={src}
-        width="100%"
-        height="352"
-        frameBorder="0"
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        onLoad={() => setLoaded(true)}
-        className={`h-[352px] w-full border-0 transition-opacity duration-300 ${
-          loaded ? "opacity-100" : "opacity-0"
-        }`}
-      />
+      {shouldMount && (
+        <iframe
+          title={title}
+          src={src}
+          width="100%"
+          height="352"
+          frameBorder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          onLoad={() => setLoaded(true)}
+          className={`h-[352px] w-full border-0 transition-opacity duration-300 ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      )}
     </div>
   )
 }
@@ -678,6 +719,8 @@ export function App() {
                 <FastSpotifyEmbed
                   title="Spotify Embed: Bvcovia"
                   src="https://open.spotify.com/embed/artist/5CqmNRrmp3UP3NGccmlKHR?utm_source=oembed&theme=0"
+                  isActive={activeEdition === "bvcovia"}
+                  priority={true}
                 />
               </div>
             </div>
@@ -816,6 +859,7 @@ export function App() {
               <FastSpotifyEmbed
                 title="Spotify Embed: Anubis"
                 src="https://open.spotify.com/embed/album/7bUjQKCSnBG52CxK2UPiqA?utm_source=oembed&theme=0"
+                isActive={activeEdition === "bvcovia"}
               />
             </div>
           </div>
@@ -1189,6 +1233,8 @@ export function App() {
                 <FastSpotifyEmbed
                   title="Spotify Embed: Berechet"
                   src="https://open.spotify.com/embed/artist/50vNYJ9Cj5MfsFqGqI7JXQ?utm_source=oembed&theme=0"
+                  isActive={activeEdition === "berechet"}
+                  priority={true}
                 />
               </div>
             </div>
